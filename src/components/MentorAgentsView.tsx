@@ -6,6 +6,7 @@ import type {
   MentorMessage,
   WorkspaceState,
 } from '../shared/types.ts';
+import { VoiceSpeechInput } from './VoiceSpeechInput.tsx';
 
 interface MentorAgentsViewProps {
   workspace: WorkspaceState;
@@ -183,7 +184,7 @@ export function MentorAgentsView({
                 e.preventDefault();
                 sendMessage(input);
               }}
-              className="flex gap-2"
+              className="flex items-center gap-2"
             >
               <label htmlFor="mentor-chat-input" className="sr-only">
                 Ask your AI Mentor a question
@@ -195,6 +196,12 @@ export function MentorAgentsView({
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about your roadmap, skill gaps, or career switch..."
                 className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+              />
+              <VoiceSpeechInput
+                onTranscript={(text) =>
+                  setInput((prev) => (prev ? `${prev} ${text}` : text))
+                }
+                disabled={sending}
               />
               <button
                 type="submit"
