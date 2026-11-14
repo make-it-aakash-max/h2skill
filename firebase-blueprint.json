@@ -1,0 +1,250 @@
+{
+  "entities": {
+    "UserPublic": {
+      "title": "UserPublic",
+      "description": "Non-PII public profile metadata for a workspace member.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "role": {
+          "type": "string",
+          "enum": ["student", "admin", "owner"]
+        },
+        "organization": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "displayName", "role", "organization", "createdAt", "updatedAt"]
+    },
+    "UserPrivate": {
+      "title": "UserPrivate",
+      "description": "PII-isolated private account details such as email.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 200
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "AdminGrant": {
+      "title": "AdminGrant",
+      "description": "Trusted RBAC document granting Admin privileges to a user.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "grantedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "grantedBy", "createdAt"]
+    },
+    "LearnerWorkspace": {
+      "title": "LearnerWorkspace",
+      "description": "Persistent personalized learning profile, skill gap analysis, roadmap, assessments, adaptive recommendations, and 5-agent trace.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "headline": {
+          "type": "string",
+          "maxLength": 180
+        },
+        "organization": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "avatarUrl": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "weeklyHoursAvailable": {
+          "type": "number"
+        },
+        "targetCareerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "readinessScore": {
+          "type": "number"
+        },
+        "skills": {
+          "type": "array"
+        },
+        "certifications": {
+          "type": "array"
+        },
+        "projects": {
+          "type": "array"
+        },
+        "analysis": {
+          "type": "object"
+        },
+        "roadmap": {
+          "type": "array"
+        },
+        "assessments": {
+          "type": "array"
+        },
+        "adaptiveRecommendations": {
+          "type": "array"
+        },
+        "agentTrace": {
+          "type": "array"
+        },
+        "mentorHistory": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "name",
+        "headline",
+        "organization",
+        "weeklyHoursAvailable",
+        "targetCareerId",
+        "readinessScore",
+        "skills",
+        "certifications",
+        "projects",
+        "analysis",
+        "roadmap",
+        "assessments",
+        "adaptiveRecommendations",
+        "agentTrace",
+        "mentorHistory",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CareerTrack": {
+      "title": "CareerTrack",
+      "description": "Admin/Owner managed target career competency matrix.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "domain": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "typicalTimelineWeeks": {
+          "type": "number"
+        },
+        "requiredSkills": {
+          "type": "array"
+        },
+        "updatedBy": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "title", "domain", "summary", "typicalTimelineWeeks", "requiredSkills", "updatedBy", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserPublic" },
+      "description": "Public profile metadata and role display for workspace members."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivate" },
+      "description": "PII-isolated private user email and account metadata."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminGrant" },
+      "description": "Trusted admin role grants managed exclusively by the platform Owner."
+    },
+    "/learners/{userId}": {
+      "schema": { "$ref": "#/entities/LearnerWorkspace" },
+      "description": "Individual learner profile, gap analysis, roadmap, adaptive recommendations, assessments, and 5-agent trace."
+    },
+    "/careers/{roleId}": {
+      "schema": { "$ref": "#/entities/CareerTrack" },
+      "description": "Shared career role competency benchmarks curated by Admins and Owners."
+    }
+  }
+}

@@ -1,0 +1,235 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global safety net: default deny everything
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isVerified() && request.auth.uid == userId;
+    }
+
+    function isPlatformOwner() {
+      return isVerified() && request.auth.token.email == 'makeitaakash@gmail.com';
+    }
+
+    function isAdmin() {
+      return isPlatformOwner() || (
+        isVerified() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidUserPublic(data, userId) {
+      return data.keys().hasAll(['uid', 'displayName', 'role', 'organization', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'displayName', 'role', 'organization', 'createdAt', 'updatedAt'])
+        && data.uid == userId
+        && isValidId(data.uid)
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 120
+        && data.organization is string && data.organization.size() >= 1 && data.organization.size() <= 120
+        && data.role is string && data.role in ['student', 'admin', 'owner']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidUserPrivate(data, userId) {
+      return data.keys().hasAll(['uid', 'email', 'createdAt'])
+        && data.keys().hasOnly(['uid', 'email', 'createdAt'])
+        && data.uid == userId
+        && isValidId(data.uid)
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 200
+        && data.createdAt is timestamp;
+    }
+
+    function isValidAdminGrant(data, userId) {
+      return data.keys().hasAll(['uid', 'email', 'grantedBy', 'createdAt'])
+        && data.keys().hasOnly(['uid', 'email', 'grantedBy', 'createdAt'])
+        && data.uid == userId
+        && isValidId(data.uid)
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 200
+        && data.grantedBy is string && data.grantedBy.size() >= 1 && data.grantedBy.size() <= 128
+        && data.createdAt is timestamp;
+    }
+
+    function isValidLearner(data, userId) {
+      return data.keys().hasAll([
+        'uid', 'name', 'headline', 'organization', 'weeklyHoursAvailable',
+        'targetCareerId', 'readinessScore', 'skills', 'certifications',
+        'projects', 'analysis', 'roadmap', 'assessments',
+        'adaptiveRecommendations', 'agentTrace', 'mentorHistory',
+        'createdAt', 'updatedAt'
+      ])
+        && data.keys().hasOnly([
+          'uid', 'name', 'headline', 'organization', 'avatarUrl',
+          'weeklyHoursAvailable', 'targetCareerId', 'readinessScore',
+          'skills', 'certifications', 'projects', 'analysis', 'roadmap',
+          'assessments', 'adaptiveRecommendations', 'agentTrace',
+          'mentorHistory', 'createdAt', 'updatedAt'
+        ])
+        && data.uid == userId
+        && isValidId(data.uid)
+        && data.name is string && data.name.size() >= 1 && data.name.size() <= 120
+        && data.headline is string && data.headline.size() <= 180
+        && data.organization is string && data.organization.size() <= 120
+        && (!('avatarUrl' in data) || (data.avatarUrl is string && data.avatarUrl.size() <= 500))
+        && data.weeklyHoursAvailable is number && data.weeklyHoursAvailable >= 1 && data.weeklyHoursAvailable <= 80
+        && isValidId(data.targetCareerId) && data.targetCareerId.size() <= 64
+        && data.readinessScore is number && data.readinessScore >= 0 && data.readinessScore <= 100
+        && data.skills is list && data.skills.size() <= 40
+        && data.certifications is list && data.certifications.size() <= 30
+        && data.projects is list && data.projects.size() <= 30
+        && data.analysis is map
+        && data.roadmap is list && data.roadmap.size() <= 40
+        && data.assessments is list && data.assessments.size() <= 50
+        && data.adaptiveRecommendations is list && data.adaptiveRecommendations.size() <= 30
+        && data.agentTrace is list && data.agentTrace.size() <= 50
+        && data.mentorHistory is list && data.mentorHistory.size() <= 50
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidCareerTrack(data, roleId) {
+      return data.keys().hasAll([
+        'id', 'title', 'domain', 'summary', 'typicalTimelineWeeks',
+        'requiredSkills', 'updatedBy', 'updatedAt'
+      ])
+        && data.keys().hasOnly([
+          'id', 'title', 'domain', 'summary', 'typicalTimelineWeeks',
+          'requiredSkills', 'updatedBy', 'updatedAt'
+        ])
+        && data.id == roleId
+        && isValidId(data.id) && data.id.size() <= 64
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 120
+        && data.domain is string && data.domain.size() <= 120
+        && data.summary is string && data.summary.size() <= 500
+        && data.typicalTimelineWeeks is number && data.typicalTimelineWeeks >= 1 && data.typicalTimelineWeeks <= 104
+        && data.requiredSkills is list && data.requiredSkills.size() >= 1 && data.requiredSkills.size() <= 25
+        && data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 128
+        && data.updatedAt is timestamp;
+    }
+
+    // Public user metadata (no PII)
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+
+      allow create: if isValidId(userId)
+        && isOwner(userId)
+        && isValidUserPublic(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && (
+          incoming().role == 'student'
+          || (incoming().role == 'owner' && isPlatformOwner())
+        );
+
+      allow update: if isValidId(userId)
+        && isValidUserPublic(incoming(), userId)
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isPlatformOwner()
+          || (
+            isOwner(userId)
+            && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'organization', 'updatedAt'])
+          )
+        );
+
+      allow delete: if isValidId(userId) && isPlatformOwner();
+
+      // PII-isolated private account subcollection
+      match /private/{docId} {
+        allow get: if isValidId(userId) && isValidId(docId) && (isOwner(userId) || isAdmin());
+        allow list: if isValidId(userId) && (isOwner(userId) || isAdmin());
+        allow create: if isValidId(userId)
+          && isValidId(docId)
+          && docId == 'account'
+          && isOwner(userId)
+          && isValidUserPrivate(incoming(), userId)
+          && incoming().createdAt == request.time;
+        allow update: if false;
+        allow delete: if isValidId(userId) && isPlatformOwner();
+      }
+    }
+
+    // Trusted RBAC Admin grants (Owner-managed only)
+    match /admins/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isPlatformOwner());
+      allow list: if isPlatformOwner();
+      allow create: if isValidId(userId)
+        && isPlatformOwner()
+        && isValidAdminGrant(incoming(), userId)
+        && incoming().createdAt == request.time;
+      allow update: if false;
+      allow delete: if isValidId(userId) && isPlatformOwner();
+    }
+
+    // Individual Learner Workspaces
+    match /learners/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+
+      allow create: if isValidId(userId)
+        && isOwner(userId)
+        && isValidLearner(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isValidId(userId)
+        && isValidLearner(incoming(), userId)
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin()
+          || (
+            isOwner(userId)
+            && incoming().diff(existing()).affectedKeys().hasOnly([
+              'name', 'headline', 'organization', 'avatarUrl',
+              'weeklyHoursAvailable', 'targetCareerId', 'readinessScore',
+              'skills', 'certifications', 'projects', 'analysis', 'roadmap',
+              'assessments', 'adaptiveRecommendations', 'agentTrace',
+              'mentorHistory', 'updatedAt'
+            ])
+          )
+        );
+
+      allow delete: if isValidId(userId) && isPlatformOwner();
+    }
+
+    // Shared Career Tracks (readable by signed-in users, editable by Admin/Owner)
+    match /careers/{roleId} {
+      allow get: if isValidId(roleId) && isVerified();
+      allow list: if isVerified();
+      allow create, update: if isValidId(roleId)
+        && isAdmin()
+        && isValidCareerTrack(incoming(), roleId)
+        && incoming().updatedAt == request.time;
+      allow delete: if isValidId(roleId) && isPlatformOwner();
+    }
+  }
+}

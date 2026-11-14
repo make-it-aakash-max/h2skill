@@ -1,0 +1,421 @@
+{
+  "profile": {
+    "id": "learner-maya-lin",
+    "name": "Maya Lin",
+    "headline": "B.S. Computer Science Senior · Aspiring Product Engineer",
+    "organization": "Pacific State University",
+    "avatarUrl": "/src/assets/images/avatar_learner_profile_1794630200095.jpg",
+    "weeklyHoursAvailable": 12,
+    "targetCareerId": "full-stack-dev",
+    "skills": [
+      {
+        "name": "Python",
+        "proficiency": 82,
+        "levelLabel": "Advanced",
+        "verified": true,
+        "source": "CS 301 Algorithms & Scripting"
+      },
+      {
+        "name": "SQL",
+        "proficiency": 68,
+        "levelLabel": "Intermediate",
+        "verified": true,
+        "source": "Database Systems Lab"
+      },
+      {
+        "name": "HTML & CSS",
+        "proficiency": 45,
+        "levelLabel": "Beginner",
+        "verified": false,
+        "source": "Self-taught portfolio page"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "cert-1",
+        "title": "Relational Database Design Foundations",
+        "issuer": "University Data Institute",
+        "year": "2025"
+      },
+      {
+        "id": "cert-2",
+        "title": "Python for Scientific Computing",
+        "issuer": "OpenCourse Consortium",
+        "year": "2025"
+      }
+    ],
+    "projects": [
+      {
+        "id": "proj-1",
+        "title": "Campus Course Enrollment Analyzer",
+        "summary": "CLI analytics tool parsing CSV registrar logs into normalized SQLite tables with Python reporting.",
+        "techStack": [
+          "Python",
+          "SQL",
+          "SQLite"
+        ]
+      },
+      {
+        "id": "proj-2",
+        "title": "Personal Academic Portfolio v1",
+        "summary": "Static multi-page biography and lab notes site written with semantic HTML and basic CSS.",
+        "techStack": [
+          "HTML & CSS"
+        ]
+      }
+    ]
+  },
+  "analysis": {
+    "targetRoleId": "full-stack-dev",
+    "targetRoleTitle": "Full Stack Developer",
+    "readinessScore": 34,
+    "strongCount": 1,
+    "developingCount": 2,
+    "missingCount": 4,
+    "items": [
+      {
+        "skillName": "JavaScript",
+        "category": "Frontend & Runtime",
+        "priority": "Core",
+        "currentLevel": 0,
+        "requiredLevel": 80,
+        "gapPoints": 80,
+        "status": "missing",
+        "rationale": "No recorded proficiency yet; required at 80% (Core competency)."
+      },
+      {
+        "skillName": "React",
+        "category": "Frontend & Runtime",
+        "priority": "Core",
+        "currentLevel": 0,
+        "requiredLevel": 75,
+        "gapPoints": 75,
+        "status": "missing",
+        "rationale": "No recorded proficiency yet; required at 75% (Core competency)."
+      },
+      {
+        "skillName": "Node.js",
+        "category": "Backend & APIs",
+        "priority": "Core",
+        "currentLevel": 0,
+        "requiredLevel": 75,
+        "gapPoints": 75,
+        "status": "missing",
+        "rationale": "No recorded proficiency yet; required at 75% (Core competency)."
+      },
+      {
+        "skillName": "Git & Testing",
+        "category": "Engineering Practice",
+        "priority": "Important",
+        "currentLevel": 0,
+        "requiredLevel": 70,
+        "gapPoints": 70,
+        "status": "missing",
+        "rationale": "No recorded proficiency yet; required at 70% (Important competency)."
+      },
+      {
+        "skillName": "SQL",
+        "category": "Data Layer",
+        "priority": "Core",
+        "currentLevel": 68,
+        "requiredLevel": 70,
+        "gapPoints": 2,
+        "status": "developing",
+        "rationale": "Partial foundation at 68%; needs +2% to reach the 70% role target."
+      },
+      {
+        "skillName": "HTML & CSS",
+        "category": "Frontend & Runtime",
+        "priority": "Important",
+        "currentLevel": 45,
+        "requiredLevel": 75,
+        "gapPoints": 30,
+        "status": "developing",
+        "rationale": "Partial foundation at 45%; needs +30% to reach the 75% role target."
+      },
+      {
+        "skillName": "Python",
+        "category": "Backend & Scripting",
+        "priority": "Supporting",
+        "currentLevel": 82,
+        "requiredLevel": 60,
+        "gapPoints": 0,
+        "status": "strong",
+        "rationale": "Meets the 60% benchmark for Full Stack Developer (82% current)."
+      }
+    ],
+    "analystSummary": "Maya Lin brings solid foundations in Python, with 4 critical missing skills (JavaScript, React, Node.js, Git & Testing) prioritized for Full Stack Developer readiness."
+  },
+  "roadmap": [
+    {
+      "id": "mod-js-core",
+      "title": "Modern JavaScript: Async Flows, Closures & DOM Architecture",
+      "skillTarget": "JavaScript",
+      "phase": "Foundations",
+      "format": "Course",
+      "provider": "SkillPath Interactive Lab",
+      "estimatedHours": 14,
+      "difficulty": "Beginner",
+      "objectives": [
+        "Master lexical scope, closures, and array transformations",
+        "Write clean async/await data fetching with error boundaries",
+        "Manipulate DOM state and events without memory leaks"
+      ],
+      "exercisePrompt": "Build a debounced live search filter fetching JSON records with AbortController cancellation.",
+      "status": "not_started",
+      "progressPercent": 0,
+      "adaptationReason": "Added to bridge missing core skill (JavaScript) for Full Stack Developer."
+    },
+    {
+      "id": "mod-react-ui",
+      "title": "React Component Engineering & State Architecture",
+      "skillTarget": "React",
+      "phase": "Core Stack",
+      "format": "Practical Exercise",
+      "provider": "Frontend Guild Curriculum",
+      "estimatedHours": 18,
+      "difficulty": "Intermediate",
+      "objectives": [
+        "Design reusable, accessible UI components with TypeScript props",
+        "Manage derived state, effects, and optimistic updates cleanly",
+        "Structure multi-view client apps with predictable data flow"
+      ],
+      "exercisePrompt": "Implement a filterable task board with persistent state, keyboard navigation, and inline validation.",
+      "status": "not_started",
+      "progressPercent": 0,
+      "adaptationReason": "Added to bridge missing core skill (React) for Full Stack Developer."
+    },
+    {
+      "id": "mod-node-api",
+      "title": "Node.js & Express REST APIs with Authentication",
+      "skillTarget": "Node.js",
+      "phase": "Core Stack",
+      "format": "Course",
+      "provider": "Systems Engineering Track",
+      "estimatedHours": 16,
+      "difficulty": "Intermediate",
+      "objectives": [
+        "Build modular Express routers with schema validation middleware",
+        "Connect parameterized SQL queries to REST endpoints safely",
+        "Implement session handling, rate limiting, and structured error responses"
+      ],
+      "exercisePrompt": "Create a RESTful resource service backed by SQL with CRUD endpoints and centralized error handling.",
+      "status": "not_started",
+      "progressPercent": 0,
+      "adaptationReason": "Added to bridge missing core skill (Node.js) for Full Stack Developer."
+    },
+    {
+      "id": "mod-git-testing",
+      "title": "Collaborative Git Workflows & Automated Testing Suites",
+      "skillTarget": "Git & Testing",
+      "phase": "Applied Systems",
+      "format": "Practical Exercise",
+      "provider": "Engineering Craft Lab",
+      "estimatedHours": 10,
+      "difficulty": "Intermediate",
+      "objectives": [
+        "Resolve merge conflicts cleanly and write atomic pull requests",
+        "Write deterministic unit and API integration tests",
+        "Configure automated lint and build checks before merging"
+      ],
+      "exercisePrompt": "Set up a test suite covering core business logic and validate edge cases across a feature branch.",
+      "status": "not_started",
+      "progressPercent": 0,
+      "adaptationReason": "Added to bridge missing important skill (Git & Testing) for Full Stack Developer."
+    },
+    {
+      "id": "mod-sql-perf",
+      "title": "Applied SQL: Joins, Indexing & Query Optimization",
+      "skillTarget": "SQL",
+      "phase": "Core Stack",
+      "format": "Tutorial",
+      "provider": "Data Systems Lab",
+      "estimatedHours": 8,
+      "difficulty": "Intermediate",
+      "objectives": [
+        "Write multi-table analytical queries using CTEs and window functions",
+        "Diagnose slow queries with EXPLAIN and composite indexes",
+        "Enforce referential integrity with foreign keys and transactions"
+      ],
+      "exercisePrompt": "Optimize a slow reporting query using a covering index and rewrite nested subqueries into CTEs.",
+      "status": "not_started",
+      "progressPercent": 0,
+      "adaptationReason": "Targeted to lift SQL from 68% to 70%."
+    },
+    {
+      "id": "mod-html-css",
+      "title": "Responsive CSS Grid, Flexbox & Accessible Semantics",
+      "skillTarget": "HTML & CSS",
+      "phase": "Foundations",
+      "format": "Tutorial",
+      "provider": "Web Standards Studio",
+      "estimatedHours": 8,
+      "difficulty": "Beginner",
+      "objectives": [
+        "Upgrade basic HTML into landmark-rich accessible layouts",
+        "Build fluid 12-column and sidebar layouts using CSS Grid & Flexbox",
+        "Verify contrast ratios and keyboard focus states"
+      ],
+      "exercisePrompt": "Refactor a static portfolio layout into a responsive two-column workspace with WCAG AA contrast.",
+      "status": "not_started",
+      "progressPercent": 0,
+      "adaptationReason": "Targeted to lift HTML & CSS from 45% to 75%."
+    },
+    {
+      "id": "mod-capstone-full-stack-dev",
+      "title": "Full Stack Developer End-to-End Integration Capstone",
+      "skillTarget": "JavaScript",
+      "phase": "Applied Systems",
+      "format": "Capstone Project",
+      "provider": "SkillPath Project Studio",
+      "estimatedHours": 16,
+      "difficulty": "Advanced",
+      "status": "not_started",
+      "progressPercent": 0,
+      "adaptationReason": "Synthesizes JavaScript, React, Node.js into a portfolio-ready Full Stack Developer artifact.",
+      "objectives": [
+        "Combine newly learned skills with existing strengths (Python, SQL)",
+        "Document architecture decisions and verify automated tests"
+      ],
+      "exercisePrompt": "Ship a complete Full Stack Developer project connecting your strongest existing skills with JavaScript and React and Node.js."
+    }
+  ],
+  "assessments": [],
+  "adaptiveRecommendations": [
+    {
+      "id": "rec-mod-js-core",
+      "title": "Modern JavaScript: Async Flows, Closures & DOM Architecture",
+      "type": "Course",
+      "skillTarget": "JavaScript",
+      "priority": "High",
+      "triggerReason": "Added to bridge missing core skill (JavaScript) for Full Stack Developer.",
+      "estimatedHours": 14,
+      "expectedReadinessGain": 5,
+      "actionLabel": "Start in Roadmap",
+      "actionTargetTab": "roadmap"
+    },
+    {
+      "id": "rec-mod-react-ui",
+      "title": "React Component Engineering & State Architecture",
+      "type": "Practical Exercise",
+      "skillTarget": "React",
+      "priority": "High",
+      "triggerReason": "Added to bridge missing core skill (React) for Full Stack Developer.",
+      "estimatedHours": 18,
+      "expectedReadinessGain": 5,
+      "actionLabel": "Start in Roadmap",
+      "actionTargetTab": "roadmap"
+    },
+    {
+      "id": "rec-assess-sql",
+      "title": "Verify SQL Baseline Diagnostic",
+      "type": "Practical Exercise",
+      "skillTarget": "SQL",
+      "priority": "Recommended",
+      "triggerReason": "You hold 68% in SQL; verifying baseline unlocks targeted pacing.",
+      "estimatedHours": 1,
+      "expectedReadinessGain": 6,
+      "actionLabel": "Take Diagnostic",
+      "actionTargetTab": "assessments"
+    },
+    {
+      "id": "rec-pivot-ml-engineer",
+      "title": "Adjacent Career Match: Machine Learning Engineer (39% Fit)",
+      "type": "Career Pivot",
+      "skillTarget": "Machine Learning Engineer",
+      "priority": "High",
+      "triggerReason": "Market & Role Scout detected 39% current readiness for Machine Learning Engineer (+5% higher than Full Stack Developer) using your existing strengths.",
+      "estimatedHours": 160,
+      "expectedReadinessGain": 5,
+      "actionLabel": "Switch to Machine Learning Engineer",
+      "actionTargetTab": "overview",
+      "targetRoleId": "ml-engineer"
+    }
+  ],
+  "agentTrace": [
+    {
+      "id": "trace-1794632705875",
+      "agent": "AI Mentor",
+      "trigger": "Learner Coaching Query",
+      "action": "Consulted AI Mentor, Skill Analyst, Curriculum Architect, Market & Role Scout to answer \"How do Python and SQL help me learn React?\"",
+      "finding": "Recommended next action: Open \"Modern JavaScript: Async Flows, Closures & DOM Architecture\" in Learning Roadmap",
+      "timestamp": "2026-11-14T05:05:05.875Z"
+    },
+    {
+      "id": "trace-init-1",
+      "agent": "Skill Analyst",
+      "trigger": "Initial Profile Diagnostic",
+      "action": "Evaluated Maya Lin's skills (Python 82%, SQL 68%, HTML & CSS 45%) against Full Stack Developer competencies.",
+      "finding": "Identified strong backend/data roots in Python and SQL; flagged JavaScript, React, Node.js, and Git & Testing as primary gaps.",
+      "timestamp": "2026-11-14T05:05:03.477Z"
+    },
+    {
+      "id": "trace-init-2",
+      "agent": "Market & Role Scout",
+      "trigger": "Initial Profile Diagnostic",
+      "action": "Benchmarked Full Stack Developer competency weights and scanned adjacent career tracks.",
+      "finding": "Full Stack Developer readiness at 34%; noted Data Engineer as highest adjacent pivot fit from Python & SQL strengths.",
+      "timestamp": "2026-11-14T05:05:03.477Z"
+    },
+    {
+      "id": "trace-init-3",
+      "agent": "Curriculum Architect",
+      "trigger": "Initial Profile Diagnostic",
+      "action": "Constructed a 7-module adaptive path prioritizing missing Core skills before capstone integration.",
+      "finding": "Skipped introductory Python courses to save ~14 hours and opened with Modern JavaScript.",
+      "timestamp": "2026-11-14T05:05:03.477Z"
+    },
+    {
+      "id": "trace-init-4",
+      "agent": "Progress Evaluator",
+      "trigger": "Initial Profile Diagnostic",
+      "action": "Configured diagnostic readiness checkpoints across each missing and developing competency.",
+      "finding": "Calibrated weekly pacing to 12 hours/week.",
+      "timestamp": "2026-11-14T05:05:03.477Z"
+    },
+    {
+      "id": "trace-init-5",
+      "agent": "AI Mentor",
+      "trigger": "Initial Profile Diagnostic",
+      "action": "Synthesized all 4 sibling agents into onboarding guidance linking Python/SQL background to JavaScript & Node.js concepts.",
+      "finding": "Ready to adapt roadmap whenever career goals shift or assessments reveal weak spots.",
+      "timestamp": "2026-11-14T05:05:03.477Z"
+    }
+  ],
+  "mentorHistory": [
+    {
+      "id": "msg-welcome",
+      "sender": "mentor",
+      "content": "Welcome, Maya Lin. Your Python (82%) and SQL (68%) foundations already cover key backend concepts for Full Stack Developer. Our 5 agents prioritized JavaScript, React, and Node.js first on your roadmap—start with Modern JavaScript or run a diagnostic quiz to verify your baseline.",
+      "timestamp": "2026-11-14T05:05:03.477Z",
+      "collaboratingAgents": [
+        "Skill Analyst",
+        "Market & Role Scout",
+        "Curriculum Architect",
+        "Progress Evaluator",
+        "AI Mentor"
+      ],
+      "recommendedAction": "Start Modern JavaScript or run a baseline diagnostic"
+    },
+    {
+      "id": "msg-1794632699873-user",
+      "sender": "learner",
+      "content": "How do Python and SQL help me learn React?",
+      "timestamp": "2026-11-14T05:04:59.873Z"
+    },
+    {
+      "id": "msg-1794632705875-mentor",
+      "sender": "mentor",
+      "content": "For Full Stack Developer (34% current readiness), your highest-leverage next step is \"Modern JavaScript: Async Flows, Closures & DOM Architecture\" (14 hrs). Closing JavaScript and React unlocks the largest jump in role match while leveraging your existing strength in Python.",
+      "timestamp": "2026-11-14T05:05:05.875Z",
+      "collaboratingAgents": [
+        "AI Mentor",
+        "Skill Analyst",
+        "Curriculum Architect",
+        "Market & Role Scout"
+      ],
+      "recommendedAction": "Open \"Modern JavaScript: Async Flows, Closures & DOM Architecture\" in Learning Roadmap"
+    }
+  ],
+  "lastAdaptedAt": "2026-11-14T05:05:03.477Z"
+}

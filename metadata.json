@@ -1,0 +1,8 @@
+{
+  "name": "SkillPath",
+  "description": "AI-powered adaptive learning platform that maps learner skills, identifies career gaps, and orchestrates multi-agent roadmaps and mentoring.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
