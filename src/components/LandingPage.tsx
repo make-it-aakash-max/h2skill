@@ -15,6 +15,7 @@ import type { UserRole } from '../shared/types.ts';
 import type { AuthModalTab } from './AuthOptionsModal.tsx';
 import { SpotlightCard } from './SpotlightCard.tsx';
 import { ThemeToggle } from './ThemeToggle.tsx';
+import { SkillWaveWidget } from './SkillWaveWidget.tsx';
 
 interface LandingPageProps {
   authLoading: boolean;
@@ -228,75 +229,9 @@ export function LandingPage({
                 initial={prefersReduced ? false : { opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.08, ease: 'easeOut' }}
-                className="lg:col-span-6 relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg"
+                className="lg:col-span-6 relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-950 shadow-lg"
               >
-                {!heroImgFailed ? (
-                  <img
-                    src="/src/assets/images/hero_learning_studio_1794632268933.jpg"
-                    alt="Students and engineers collaborating in a daylight-filled university learning studio"
-                    referrerPolicy="no-referrer"
-                    onError={() => setHeroImgFailed(true)}
-                    className="h-80 lg:h-full min-h-[380px] w-full object-cover dark:brightness-90"
-                  />
-                ) : (
-                  <div className="flex h-80 lg:h-full min-h-[380px] w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
-                    <Compass className="h-12 w-12 text-slate-400" aria-hidden="true" />
-                  </div>
-                )}
-
-                {/* Measured scrim overlay for legibility */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent"
-                />
-
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 text-white">
-                  <div className="rounded-xl border border-white/15 bg-slate-950/75 backdrop-blur-md p-4">
-                    <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2.5">
-                      <div>
-                        <div className="text-[11px] font-medium text-sky-300">
-                          Sample Diagnostic Snapshot
-                        </div>
-                        <div className="font-display text-sm font-semibold text-white">
-                          CS Student → Full Stack Developer
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-mono text-lg font-bold text-white tabular-nums">
-                          48%
-                        </div>
-                        <div className="text-[10px] text-slate-300">Readiness</div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="text-slate-200">Python &amp; SQL</span>
-                        <span className="font-mono font-semibold text-emerald-400 tabular-nums">
-                          Strong (75%)
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-slate-200">HTML &amp; CSS</span>
-                        <span className="font-mono font-semibold text-amber-300 tabular-nums">
-                          52%
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-slate-200">JavaScript &amp; React</span>
-                        <span className="font-mono font-semibold text-rose-300 tabular-nums">
-                          Missing Gap
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-slate-200">Node.js APIs</span>
-                        <span className="font-mono font-semibold text-rose-300 tabular-nums">
-                          Missing Gap
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <SkillWaveWidget />
               </motion.div>
             </div>
           </div>

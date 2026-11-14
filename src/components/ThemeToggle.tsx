@@ -1,5 +1,9 @@
-import { Monitor, Moon, Sparkles, Sun } from 'lucide-react';
+import { Dices, Monitor, Moon, MousePointer, Sparkles, Sun, Zap } from 'lucide-react';
 import { type Theme, useTheme } from '../context/ThemeContext.tsx';
+import {
+  SPECIAL_EFFECTS_CATALOG,
+  type SpecialEffectMode,
+} from '../utils/specialEffectsCatalog.ts';
 
 interface ThemeToggleProps {
   className?: string;
@@ -12,7 +16,15 @@ export function ThemeToggle({
   showLabels = false,
   size = 'sm',
 }: ThemeToggleProps) {
-  const { theme, setTheme, mouseTrackEnabled, setMouseTrackEnabled } = useTheme();
+  const {
+    theme,
+    setTheme,
+    mouseTrackStyle,
+    cycleMouseTrackStyle,
+    effectMode,
+    setEffectMode,
+    triggerRandomEffect,
+  } = useTheme();
 
   const options: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
     { value: 'light', label: 'Light', icon: Sun },
@@ -20,10 +32,23 @@ export function ThemeToggle({
     { value: 'system', label: 'System', icon: Monitor },
   ];
 
+  const cycleNextEffect = () => {
+    const modes: SpecialEffectMode[] = [
+      'crisscross',
+      'pulse-burst',
+      'matrix-circuit',
+      'aurora-glow',
+    ];
+    const currentIndex = modes.indexOf(effectMode);
+    const nextMode = modes[(currentIndex + 1) % modes.length] || 'crisscross';
+    setEffectMode(nextMode);
+    triggerRandomEffect();
+  };
+
   return (
     <div
       role="radiogroup"
-      aria-label="Color theme selection"
+      aria-label="Color theme selection and special effects options"
       className={`inline-flex items-center gap-0.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/90 dark:bg-slate-900/90 p-0.5 ${className}`}
     >
       {options.map((opt) => {
@@ -54,24 +79,50 @@ export function ThemeToggle({
 
       <div className="mx-0.5 h-3.5 w-px bg-slate-300 dark:bg-slate-700" aria-hidden="true" />
 
-      {/* Mouse Track Animation Toggle */}
+      {/* Mouse Track Style Cycler Button */}
       <button
         type="button"
-        onClick={() => setMouseTrackEnabled(!mouseTrackEnabled)}
-        title={
-          mouseTrackEnabled
-            ? 'Mouse track animation active (Click to toggle)'
-            : 'Mouse track animation paused (Click to enable)'
-        }
-        aria-label="Toggle mouse track animation"
-        aria-pressed={mouseTrackEnabled}
-        className={`inline-flex items-center justify-center rounded-md p-1 text-xs transition-colors ${
-          mouseTrackEnabled
-            ? 'text-sky-600 dark:text-cyan-400 hover:text-sky-700 dark:hover:text-cyan-300'
-            : 'text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400'
+        onClick={cycleMouseTrackStyle}
+        title={`Mouse Track Style: ${mouseTrackStyle.toUpperCase()} (Click to cycle styles)`}
+        aria-label="Cycle mouse track animation style"
+        className={`inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-medium transition-colors ${
+          mouseTrackStyle !== 'off'
+            ? 'text-sky-600 dark:text-cyan-400 hover:bg-sky-50 dark:hover:bg-cyan-950/50'
+            : 'text-slate-400 dark:text-slate-600 hover:bg-slate-200 dark:hover:bg-slate-800'
         }`}
       >
-        <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <MousePointer className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <span className="hidden sm:inline font-mono text-[10px]">
+          {mouseTrackStyle}
+        </span>
+      </button>
+
+      {/* 4 Random Special Effects Mode Selector */}
+      <button
+        type="button"
+        onClick={cycleNextEffect}
+        title={`Current FX: ${
+          SPECIAL_EFFECTS_CATALOG.find((e) => e.id === effectMode)?.name ??
+          effectMode
+        } (Click to cycle 4 random effects)`}
+        aria-label="Cycle 4 random special effect modes"
+        className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/50 transition-colors"
+      >
+        <Zap className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <span className="hidden sm:inline font-mono text-[10px]">
+          {effectMode.split('-')[0]}
+        </span>
+      </button>
+
+      {/* Randomize FX Button */}
+      <button
+        type="button"
+        onClick={() => triggerRandomEffect()}
+        title="Trigger Random Special Effect Animation"
+        aria-label="Trigger random special effect animation"
+        className="inline-flex items-center justify-center rounded-md p-1 text-xs text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/50 transition-colors"
+      >
+        <Dices className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
       </button>
     </div>
   );

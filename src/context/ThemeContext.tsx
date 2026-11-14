@@ -8,6 +8,14 @@ import {
 } from 'react';
 import { MouseTracker } from '../components/MouseTracker.tsx';
 import { ThemeCrisscrossTransition } from '../components/ThemeCrisscrossTransition.tsx';
+import {
+  getNextMouseTrackStyle,
+  type MouseTrackStyle,
+} from '../utils/mouseTrackCatalog.ts';
+import {
+  getRandomSpecialEffect,
+  type SpecialEffectMode,
+} from '../utils/specialEffectsCatalog.ts';
 import { calculateTargetResolved } from '../utils/themeEffects.ts';
 
 export type Theme = 'light' | 'dark' | 'system';
@@ -22,6 +30,12 @@ interface ThemeContextValue {
   transitionDirection: 'to-dark' | 'to-light' | null;
   mouseTrackEnabled: boolean;
   setMouseTrackEnabled: (enabled: boolean) => void;
+  mouseTrackStyle: MouseTrackStyle;
+  setMouseTrackStyle: (style: MouseTrackStyle) => void;
+  cycleMouseTrackStyle: () => void;
+  effectMode: SpecialEffectMode;
+  setEffectMode: (mode: SpecialEffectMode) => void;
+  triggerRandomEffect: () => void;
   triggerCrisscrossEffect: (direction?: 'to-dark' | 'to-light') => void;
 }
 
@@ -29,6 +43,8 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 const THEME_STORAGE_KEY = 'skillpath_theme';
 const MOUSE_FX_STORAGE_KEY = 'skillpath_mouse_fx';
+const MOUSE_STYLE_STORAGE_KEY = 'skillpath_mouse_style';
+const EFFECT_MODE_STORAGE_KEY = 'skillpath_fx_mode';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
@@ -67,6 +83,34 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   });
 
+  const [mouseTrackStyle, setMouseTrackStyleState] = useState<MouseTrackStyle>(() => {
+    if (typeof window === 'undefined') return 'stardust';
+    try {
+      const stored = localStorage.getItem(
+        MOUSE_STYLE_STORAGE_KEY,
+      ) as MouseTrackStyle | null;
+      return stored && ['stardust', 'neon-ribbon', 'matrix-sparks', 'off'].includes(stored)
+        ? stored
+        : 'stardust';
+    } catch {
+      return 'stardust';
+    }
+  });
+
+  const [effectMode, setEffectModeState] = useState<SpecialEffectMode>(() => {
+    if (typeof window === 'undefined') return 'crisscross';
+    try {
+      const stored = localStorage.getItem(
+        EFFECT_MODE_STORAGE_KEY,
+      ) as SpecialEffectMode | null;
+      return stored && ['crisscross', 'pulse-burst', 'matrix-circuit', 'aurora-glow'].includes(stored)
+        ? stored
+        : 'crisscross';
+    } catch {
+      return 'crisscross';
+    }
+  });
+
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [transitionDirection, setTransitionDirection] = useState<
     'to-dark' | 'to-light' | null
@@ -85,7 +129,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Synchronize on mount and handle system preference changes
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const initial = calculateTargetResolved(theme, mediaQuery.matches);
@@ -111,6 +154,41 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (transitionTimerRef.current.finish) {
       window.clearTimeout(transitionTimerRef.current.finish);
     }
+  };
+
+  const setEffectMode = (mode: SpecialEffectMode) => {
+    setEffectModeState(mode);
+    try {
+      localStorage.setItem(EFFECT_MODE_STORAGE_KEY, mode);
+    } catch {
+      // ignore
+    }
+  };
+
+  const triggerRandomEffect = () => {
+    const randomMode = getRandomSpecialEffect();
+    setEffectMode(randomMode);
+    triggerCrisscrossEffect(resolvedTheme === 'dark' ? 'to-dark' : 'to-light');
+  };
+
+  const setMouseTrackStyle = (style: MouseTrackStyle) => {
+    setMouseTrackStyleState(style);
+    if (style === 'off') {
+      setMouseTrackEnabledState(false);
+    } else {
+      setMouseTrackEnabledState(true);
+    }
+    try {
+      localStorage.setItem(MOUSE_STYLE_STORAGE_KEY, style);
+      localStorage.setItem(MOUSE_FX_STORAGE_KEY, String(style !== 'off'));
+    } catch {
+      // ignore
+    }
+  };
+
+  const cycleMouseTrackStyle = () => {
+    const next = getNextMouseTrackStyle(mouseTrackStyle);
+    setMouseTrackStyle(next);
   };
 
   const triggerCrisscrossEffect = (forcedDirection?: 'to-dark' | 'to-light') => {
@@ -150,7 +228,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       // ignore
     }
 
-    // If switching between different resolved themes, run the crisscross transition
     if (targetResolved !== resolvedTheme && !prefersReduced) {
       clearTimers();
       const dir: 'to-dark' | 'to-light' =
@@ -159,25 +236,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       setIsTransitioning(true);
       setTransitionDirection(dir);
 
-      // Midpoint: switch DOM class while crisscross slats meet
       transitionTimerRef.current.mid = window.setTimeout(() => {
         applyDomTheme(targetResolved);
         setResolvedTheme(targetResolved);
         setThemeState(next);
       }, 250);
 
-      // Finish: clean up transition overlay
       transitionTimerRef.current.finish = window.setTimeout(() => {
         setIsTransitioning(false);
         setTransitionDirection(null);
       }, 620);
     } else {
-      // If clicking same theme or reduced motion, update immediately
       setThemeState(next);
       setResolvedTheme(targetResolved);
       applyDomTheme(targetResolved);
 
-      // If user clicked the same resolved theme, give them a fun replay of the crisscross effect!
       if (!prefersReduced && (next === 'dark' || next === 'light')) {
         triggerCrisscrossEffect(targetResolved === 'dark' ? 'to-dark' : 'to-light');
       }
@@ -191,10 +264,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setMouseTrackEnabled = (enabled: boolean) => {
     setMouseTrackEnabledState(enabled);
-    try {
-      localStorage.setItem(MOUSE_FX_STORAGE_KEY, String(enabled));
-    } catch {
-      // ignore
+    if (!enabled) {
+      setMouseTrackStyle('off');
+    } else if (mouseTrackStyle === 'off') {
+      setMouseTrackStyle('stardust');
     }
   };
 
@@ -209,6 +282,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         transitionDirection,
         mouseTrackEnabled,
         setMouseTrackEnabled,
+        mouseTrackStyle,
+        setMouseTrackStyle,
+        cycleMouseTrackStyle,
+        effectMode,
+        setEffectMode,
+        triggerRandomEffect,
         triggerCrisscrossEffect,
       }}
     >
@@ -216,8 +295,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       <ThemeCrisscrossTransition
         active={isTransitioning}
         direction={transitionDirection}
+        effectMode={effectMode}
       />
-      <MouseTracker enabled={mouseTrackEnabled} />
+      <MouseTracker
+        enabled={mouseTrackEnabled && mouseTrackStyle !== 'off'}
+        styleMode={mouseTrackStyle}
+      />
     </ThemeContext.Provider>
   );
 }
