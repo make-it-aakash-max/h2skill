@@ -1,4 +1,4 @@
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Monitor, Moon, Sparkles, Sun } from 'lucide-react';
 import { type Theme, useTheme } from '../context/ThemeContext.tsx';
 
 interface ThemeToggleProps {
@@ -12,7 +12,7 @@ export function ThemeToggle({
   showLabels = false,
   size = 'sm',
 }: ThemeToggleProps) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, mouseTrackEnabled, setMouseTrackEnabled } = useTheme();
 
   const options: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
     { value: 'light', label: 'Light', icon: Sun },
@@ -24,7 +24,7 @@ export function ThemeToggle({
     <div
       role="radiogroup"
       aria-label="Color theme selection"
-      className={`inline-flex items-center rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/90 dark:bg-slate-900/90 p-0.5 ${className}`}
+      className={`inline-flex items-center gap-0.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/90 dark:bg-slate-900/90 p-0.5 ${className}`}
     >
       {options.map((opt) => {
         const Icon = opt.icon;
@@ -51,6 +51,28 @@ export function ThemeToggle({
           </button>
         );
       })}
+
+      <div className="mx-0.5 h-3.5 w-px bg-slate-300 dark:bg-slate-700" aria-hidden="true" />
+
+      {/* Mouse Track Animation Toggle */}
+      <button
+        type="button"
+        onClick={() => setMouseTrackEnabled(!mouseTrackEnabled)}
+        title={
+          mouseTrackEnabled
+            ? 'Mouse track animation active (Click to toggle)'
+            : 'Mouse track animation paused (Click to enable)'
+        }
+        aria-label="Toggle mouse track animation"
+        aria-pressed={mouseTrackEnabled}
+        className={`inline-flex items-center justify-center rounded-md p-1 text-xs transition-colors ${
+          mouseTrackEnabled
+            ? 'text-sky-600 dark:text-cyan-400 hover:text-sky-700 dark:hover:text-cyan-300'
+            : 'text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400'
+        }`}
+      >
+        <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      </button>
     </div>
   );
 }
