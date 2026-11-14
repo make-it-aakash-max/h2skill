@@ -7,9 +7,9 @@ import {
   signInWithPopup,
   signOut,
   updateProfile as updateFirebaseProfile,
-  type User,
+  type User as FirebaseUser,
 } from 'firebase/auth';
-import { Menu, RefreshCw } from 'lucide-react';
+import { Menu, RefreshCw, User as UserIcon } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import {
@@ -200,7 +200,7 @@ export default function App() {
   }, [activeTab, account?.uid]);
 
   const hydrateVerifiedCloudUser = async (
-    user: User,
+    user: FirebaseUser,
     preferredPortal?: UserRole,
   ) => {
     const [{ account: acc, workspace: ws }, loadedRoles] = await Promise.all([
@@ -949,36 +949,30 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => openAuthModal({ tab: 'google', role: account.role })}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 whitespace-nowrap"
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+                  title="Sign In / Connect Account"
+                  aria-label="Sign In / Connect Account"
                 >
-                  {account.isGuest ? (
-                    <>
-                      <span className="hidden sm:inline">Guest · </span>Sign In
-                    </>
-                  ) : (
-                    'Connect Account'
-                  )}
+                  <UserIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="sr-only">
+                    {account.isGuest ? 'Sign In' : 'Connect Account'}
+                  </span>
                 </button>
               )}
               <button
                 type="button"
                 onClick={handleSyncAgents}
                 disabled={adapting}
-                className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg bg-slate-900 dark:bg-blue-600 px-3 sm:px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-slate-800 dark:hover:bg-blue-500 disabled:opacity-60 whitespace-nowrap"
+                title="Sync 5 AI Agents"
+                aria-label="Sync 5 AI Agents"
+                className="inline-flex items-center justify-center rounded-lg bg-slate-900 dark:bg-blue-600 p-2 text-white transition-colors hover:bg-slate-800 dark:hover:bg-blue-500 disabled:opacity-60"
               >
                 <RefreshCw
-                  className={`h-3.5 w-3.5 ${adapting ? 'animate-spin' : ''}`}
+                  className={`h-4 w-4 shrink-0 ${adapting ? 'animate-spin' : ''}`}
                   aria-hidden="true"
                 />
-                <span>
-                  {adapting ? (
-                    'Adapting...'
-                  ) : (
-                    <>
-                      <span className="hidden sm:inline">Sync 5 AI Agents</span>
-                      <span className="sm:hidden">Sync AI</span>
-                    </>
-                  )}
+                <span className="sr-only">
+                  {adapting ? 'Adapting...' : 'Sync 5 AI Agents'}
                 </span>
               </button>
             </div>

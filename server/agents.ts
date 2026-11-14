@@ -44,6 +44,32 @@ async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   });
 }
 
+async function generateWithFallback(ai: GoogleGenAI, requestConfig: any) {
+  try {
+    return await withTimeout(
+      ai.models.generateContent({
+        model: 'gemini-4-hydrogen',
+        ...requestConfig,
+      }),
+      25000,
+    );
+  } catch (err1) {
+    console.warn('gemini-4-hydrogen failed, falling back to gemini-3.1-flash-lite:', err1);
+    try {
+      return await withTimeout(
+        ai.models.generateContent({
+          model: 'gemini-3.1-flash-lite',
+          ...requestConfig,
+        }),
+        25000,
+      );
+    } catch (err2) {
+      console.warn('gemini-3.1-flash-lite also failed:', err2);
+      throw err2;
+    }
+  }
+}
+
 function makeStep(
   agent: AgentName,
   trigger: string,
@@ -204,44 +230,40 @@ Return concise, concrete outputs from all 5 collaborating agents:
 4. evaluatorFinding: 1 crisp sentence from Progress Evaluator assessing pacing/assessment readiness.
 5. mentorGuidance: 2 concise sentences from AI Mentor giving direct coaching advice referencing their specific skills and first roadmap module.`;
 
-    const response = await withTimeout(
-      ai.models.generateContent({
-        model: 'gemini-4-hydrogen',
-        contents: prompt,
-        config: {
-          thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              analystSummary: { type: Type.STRING },
-              marketScoutFinding: { type: Type.STRING },
-              evaluatorFinding: { type: Type.STRING },
-              mentorGuidance: { type: Type.STRING },
-              moduleRationales: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    moduleId: { type: Type.STRING },
-                    rationale: { type: Type.STRING },
-                  },
-                  required: ['moduleId', 'rationale'],
+    const response = await generateWithFallback(ai, {
+      contents: prompt,
+      config: {
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            analystSummary: { type: Type.STRING },
+            marketScoutFinding: { type: Type.STRING },
+            evaluatorFinding: { type: Type.STRING },
+            mentorGuidance: { type: Type.STRING },
+            moduleRationales: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  moduleId: { type: Type.STRING },
+                  rationale: { type: Type.STRING },
                 },
+                required: ['moduleId', 'rationale'],
               },
             },
-            required: [
-              'analystSummary',
-              'marketScoutFinding',
-              'evaluatorFinding',
-              'mentorGuidance',
-              'moduleRationales',
-            ],
           },
+          required: [
+            'analystSummary',
+            'marketScoutFinding',
+            'evaluatorFinding',
+            'mentorGuidance',
+            'moduleRationales',
+          ],
         },
-      }),
-      6000,
-    );
+      },
+    });
 
     const parsed = JSON.parse((response.text ?? '{}').trim()) as {
       analystSummary?: string;
@@ -419,29 +441,25 @@ Learner asks: "${question}"
 
 Respond directly in 2-4 crisp, practical sentences. Reference their actual skills, gaps, or recent assessment. Also provide a short 4-8 word recommendedAction and list which of the 5 agents contributed.`;
 
-    const response = await withTimeout(
-      ai.models.generateContent({
-        model: 'gemini-4-hydrogen',
-        contents: prompt,
-        config: {
-          thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              reply: { type: Type.STRING },
-              recommendedAction: { type: Type.STRING },
-              collaboratingAgents: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING },
-              },
+    const response = await generateWithFallback(ai, {
+      contents: prompt,
+      config: {
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            reply: { type: Type.STRING },
+            recommendedAction: { type: Type.STRING },
+            collaboratingAgents: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
             },
-            required: ['reply', 'recommendedAction', 'collaboratingAgents'],
           },
+          required: ['reply', 'recommendedAction', 'collaboratingAgents'],
         },
-      }),
-      6000,
-    );
+      },
+    });
 
     const parsed = JSON.parse((response.text ?? '{}').trim()) as {
       reply?: string;

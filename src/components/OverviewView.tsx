@@ -4,9 +4,11 @@ import {
   Award,
   BookOpen,
   CheckCircle2,
+  CheckSquare,
   Clock,
   Compass,
   Gauge,
+  MessageSquare,
   Target,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -54,7 +56,7 @@ export function OverviewView({
     <div className="space-y-8">
       {/* Hero & Career Goal Strip with ReadinessRing */}
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-12 items-stretch">
-        <div className="lg:col-span-8 flex flex-col justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 bg-hero-atmosphere p-6">
+        <div className="lg:col-span-8 flex flex-col justify-between rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 shadow-xl shadow-slate-950/5 dark:shadow-slate-950/30 p-6 sm:p-8 relative overflow-hidden transition-all duration-200 hover:border-blue-500/40">
           <div className="space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -107,6 +109,7 @@ export function OverviewView({
               onClick={() => onNavigate('roadmap')}
               className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-800 whitespace-nowrap"
             >
+              <BookOpen className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span>
                 {nextModule
                   ? `Continue: ${nextModule.skillTarget}`
@@ -119,14 +122,16 @@ export function OverviewView({
               onClick={() => onNavigate('assessments')}
               className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 whitespace-nowrap"
             >
-              Run Diagnostic Quiz
+              <CheckSquare className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+              <span>Run Diagnostic Quiz</span>
             </button>
             <button
               type="button"
               onClick={() => onNavigate('mentor')}
               className="inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100 whitespace-nowrap"
             >
-              Ask AI Mentor
+              <MessageSquare className="h-4 w-4 shrink-0 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
+              <span>Ask AI Mentor</span>
             </button>
           </div>
         </div>
